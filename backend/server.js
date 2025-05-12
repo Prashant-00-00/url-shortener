@@ -8,12 +8,25 @@ dotenv.config();
 const app = express();
 
 // Middleware
+app.use((req, res, next) => {
+  console.log('Incoming request:', {
+    method: req.method,
+    path: req.path,
+    origin: req.headers.origin,
+    headers: req.headers
+  });
+  next();
+});
+
 app.use(cors({
-  origin: '*',  // Allow all origins in production
+  origin: true, // Allow all origins
   methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  credentials: false  // Set to false since we're using * for origin
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept'],
+  exposedHeaders: ['Content-Length', 'Content-Range'],
+  credentials: true,
+  maxAge: 86400 // 24 hours
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -9,9 +9,33 @@ const api = axios.create({
   baseURL: process.env.VITE_API_URL || 'http://localhost:5000',
   headers: {
     'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
-  }
+    'X-Requested-With': 'XMLHttpRequest',
+    'Accept': 'application/json'
+  },
+  withCredentials: true
 });
+
+// Add request interceptor for debugging
+api.interceptors.request.use(request => {
+  console.log('Starting Request:', request);
+  return request;
+});
+
+// Add response interceptor for debugging
+api.interceptors.response.use(
+  response => {
+    console.log('Response:', response);
+    return response;
+  },
+  error => {
+    console.error('Response Error:', {
+      message: error.message,
+      response: error.response,
+      request: error.request
+    });
+    return Promise.reject(error);
+  }
+);
 
 function App() {
   const [url, setUrl] = useState('')
