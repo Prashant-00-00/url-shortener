@@ -4,6 +4,15 @@ import axios from 'axios'
 import { LinkIcon, ChartBarIcon, ClipboardIcon } from '@heroicons/react/24/outline'
 import './App.css'
 
+// Create axios instance with default config
+const api = axios.create({
+  baseURL: '/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true
+});
+
 function App() {
   const [url, setUrl] = useState('')
   const [shortUrl, setShortUrl] = useState('')
@@ -18,9 +27,10 @@ function App() {
     setShortUrl('')
 
     try {
-      const response = await axios.post('/api/shorten', { originalUrl: url })
+      const response = await api.post('/shorten', { originalUrl: url })
       setShortUrl(response.data.shortUrl)
     } catch (err) {
+      console.error('Error details:', err);
       setError(err.response?.data?.error || 'Something went wrong')
     } finally {
       setLoading(false)
